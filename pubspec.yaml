@@ -3,7 +3,7 @@ description: "A new Flutter project."
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 1.0.0+1
+version: 1.0.1+2
 
 environment:
   sdk: ^3.12.2
@@ -30,9 +30,9 @@ dev_dependencies:
 flutter_launcher_icons:
   android: true
   ios: true
-  image_path: "assets/app_launcher/tiny_wheels.png"
+  image_path: "assets/logo/ocean_escape.png"
   adaptive_icon_background: "#FFFFFF"
-  adaptive_icon_foreground: "assets/logo/ocean escape.png"
+  adaptive_icon_foreground: "assets/logo/ocean_escape.png"
 
 flutter:
 
@@ -40,4 +40,4 @@ flutter:
 
   assets:
     - assets/audio/sfx/
-    - assets/logo/ocean escape.png
+    - assets/logo/ocean_escape.png
