@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../core/app_services.dart';
 import '../ui/primary_button.dart';
 import '../ui/underwater_backdrop.dart';
+import 'about_screen.dart';
 import 'game_screen.dart';
 import 'settings_screen.dart';
 import 'zones_screen.dart';
@@ -125,6 +126,16 @@ class MainMenuScreen extends StatelessWidget {
                               builder: (_) =>
                                   SettingsScreen(services: services),
                             ),
+                          );
+                        },
+                      ),
+                      const SizedBox(width: 10),
+                      _IconToggle(
+                        icon: Icons.info_rounded,
+                        onTap: () {
+                          services.audio.buttonClick();
+                          Navigator.of(context).push(
+                            MaterialPageRoute(builder: (_) => const AboutScreen()),
                           );
                         },
                       ),
