@@ -8,4 +8,5 @@ class AssetsRes {
 
   static const String PROJECT_NAME = 'ocean_escape';
   static const String PROJECT_VERSION = '1.0.0+1';
+  static const String OCEAN_ESCAPE = 'assets/logo/ocean escape.png';
 }

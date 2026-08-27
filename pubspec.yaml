@@ -32,7 +32,7 @@ flutter_launcher_icons:
   ios: true
   image_path: "assets/app_launcher/tiny_wheels.png"
   adaptive_icon_background: "#FFFFFF"
-  adaptive_icon_foreground: "assets/app_launcher/tiny_wheels.png"
+  adaptive_icon_foreground: "assets/logo/ocean escape.png"
 
 flutter:
 
@@ -40,3 +40,4 @@ flutter:
 
   assets:
     - assets/audio/sfx/
+    - assets/logo/ocean escape.png
