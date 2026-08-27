@@ -1,0 +1,2107 @@
+# Ocean Escape
+
+## Project Type
+
+Create a polished 2D horizontal side-scrolling endless runner game using Flutter and Flame.
+
+The game should be designed primarily for Android mobile devices, with an architecture that can later support Windows and Web.
+
+The game must feel like a real casual mobile game rather than a prototype.
+
+The game should be colorful, smooth, cute, responsive, lightweight, offline-friendly, and optimized for mid-range Android devices.
+
+The visual style should be polished cartoon 2D with bright colors, expressive characters, smooth animations, layered parallax backgrounds, particle effects, satisfying sound effects, and responsive controls.
+
+---
+
+# 1. Game Concept
+
+Game name:
+
+Ocean Escape
+
+Core concept:
+
+The player controls a cute small fish swimming continuously from left to right through an endless underwater world.
+
+The fish remains approximately on the left-middle portion of the screen while the underwater environment, obstacles, collectibles, and scenery move from right to left.
+
+The player must control the fish vertically.
+
+Tap the screen to make the fish swim upward.
+
+When the player stops tapping, the fish naturally sinks because of gravity.
+
+The player must avoid dangerous obstacles and collect valuable items while trying to survive for as long as possible.
+
+The game continues becoming faster and more difficult over time.
+
+The goal is to achieve the highest possible score.
+
+---
+
+# 2. Core Gameplay
+
+Gameplay loop:
+
+Start Game
+
+Fish begins swimming
+
+Environment scrolls horizontally
+
+Player taps to swim upward
+
+Player releases the screen
+
+Fish falls downward
+
+Player avoids obstacles
+
+Player collects bubbles and pearls
+
+Player uses power-ups
+
+Game speed gradually increases
+
+Environment changes
+
+Difficulty increases
+
+Player eventually crashes
+
+Game Over
+
+Show score
+
+Show high score
+
+Allow restart
+
+Allow return to home
+
+---
+
+# 3. Camera and Game View
+
+Use a 2D horizontal side-scrolling camera.
+
+Recommended aspect ratio:
+
+16:9
+
+The game should support different mobile screen sizes.
+
+Do not hardcode the game around a single device resolution.
+
+Use Flame's logical game coordinate system and responsive scaling.
+
+The fish should remain around:
+
+X = 20% to 30% of screen width
+
+The environment moves from right to left.
+
+The camera itself does not need to follow the fish horizontally.
+
+The player controls only vertical movement.
+
+---
+
+# 4. Player Character
+
+Create a cute cartoon fish as the main character.
+
+Recommended character:
+
+Small colorful tropical fish.
+
+Example design:
+
+Orange body
+
+Yellow fins
+
+Large expressive eyes
+
+Small smiling mouth
+
+Cute facial expression
+
+Soft cartoon shading
+
+Dark clean outline
+
+The character should feel friendly and suitable for children and casual players.
+
+The fish should face toward the right.
+
+The fish should have a smooth swimming animation.
+
+---
+
+# 5. Player Animations
+
+Create separate animations for:
+
+1. Idle swimming
+2. Fast swimming
+3. Hurt
+4. Shielded
+5. Death
+6. Power-up activation
+
+Swimming animation:
+
+Use approximately 6 to 8 frames.
+
+The tail and fins should move naturally.
+
+The body should have a subtle vertical movement.
+
+The animation must loop smoothly.
+
+The fish should not visually jump between frames.
+
+---
+
+# 6. Player Physics
+
+Use simple arcade-style physics.
+
+Do not implement realistic underwater physics.
+
+Use:
+
+gravity
+
+vertical velocity
+
+upward impulse
+
+maximum fall speed
+
+maximum upward speed
+
+Tap:
+
+Apply upward impulse.
+
+Release:
+
+Gravity pulls the fish downward.
+
+The movement should feel responsive.
+
+The fish should never move outside the playable vertical area.
+
+Recommended gameplay behavior:
+
+Tap duration affects the vertical position naturally.
+
+Avoid making the game too sensitive.
+
+The player should be able to make small corrections with short taps.
+
+---
+
+# 7. Controls
+
+Primary control:
+
+Tap anywhere on the gameplay screen.
+
+Tap:
+
+Fish moves upward.
+
+Release:
+
+Fish gradually falls downward.
+
+Do not require virtual joystick controls.
+
+The game should be playable with one hand.
+
+Optional future controls:
+
+Mouse click for desktop.
+
+Space key for Windows/Web.
+
+Touch controls must remain the primary control.
+
+---
+
+# 8. Game Boundaries
+
+Create invisible top and bottom boundaries.
+
+Top boundary:
+
+Prevent fish from leaving the screen.
+
+Bottom boundary:
+
+Prevent fish from leaving the playable underwater area.
+
+Touching certain environmental boundaries can either:
+
+Option A:
+
+Immediately cause game over.
+
+Preferred option:
+
+Create a small safe margin so the fish can touch the visual edge without immediately dying.
+
+---
+
+# 9. Obstacles
+
+Create multiple underwater obstacles.
+
+Main obstacle categories:
+
+1. Sharks
+2. Sea mines
+3. Coral formations
+4. Rocks
+5. Shipwreck debris
+6. Falling objects
+7. Moving enemies
+
+Each obstacle must have a collision area.
+
+Collision boxes should be slightly smaller than the visual artwork.
+
+This prevents unfair collisions.
+
+---
+
+# 10. Shark Enemy
+
+Create a cute but dangerous cartoon shark.
+
+The shark should face toward the left or right depending on its movement direction.
+
+Shark animation:
+
+6 to 8 frames.
+
+Tail should move naturally.
+
+Possible behaviors:
+
+Static shark
+
+Horizontal-moving shark
+
+Vertical-moving shark
+
+Fast shark
+
+Slow shark
+
+Shark should appear increasingly often as the game progresses.
+
+Do not spawn impossible patterns.
+
+Always provide enough space for the player to pass.
+
+---
+
+# 11. Sea Mines
+
+Create underwater mines.
+
+Visual design:
+
+Round metal mine
+
+Spikes
+
+Small blinking light
+
+Cartoon style
+
+Mine animation:
+
+Subtle rotation
+
+Small floating movement
+
+Blinking warning light
+
+Optional:
+
+Explosive particle effect when the player crashes into it.
+
+---
+
+# 12. Coral Obstacles
+
+Create large coral formations.
+
+Different shapes:
+
+Red coral
+
+Purple coral
+
+Blue coral
+
+Green coral
+
+These can be used as static obstacles.
+
+Create both:
+
+Top coral formation
+
+Bottom coral formation
+
+This allows the game to create narrow passages.
+
+---
+
+# 13. Collectibles
+
+Create two main collectibles.
+
+## Bubble
+
+Small transparent blue/white bubble.
+
+Behavior:
+
+Float upward slowly.
+
+Rotate slightly.
+
+Small shine animation.
+
+When collected:
+
+Play bubble sound.
+
+Increase score.
+
+Create small particle burst.
+
+## Pearl
+
+Pearl should be rarer than bubbles.
+
+Appearance:
+
+White glowing pearl
+
+Small sparkle effect
+
+Higher score value.
+
+Example:
+
+Bubble = +1
+
+Pearl = +10
+
+---
+
+# 14. Collectible Patterns
+
+Do not spawn collectibles completely randomly.
+
+Use predefined patterns.
+
+Examples:
+
+Straight line
+
+Vertical line
+
+Diagonal line
+
+Wave pattern
+
+Arc pattern
+
+Stair pattern
+
+Risk/reward pattern
+
+Example:
+
+Place several bubbles around an obstacle.
+
+The player must take a risky route to collect them.
+
+Pearls should sometimes appear in difficult locations.
+
+---
+
+# 15. Power-Ups
+
+Create several power-ups.
+
+## Shield
+
+Fish becomes protected from one collision.
+
+Visual:
+
+Glowing bubble around fish.
+
+Duration:
+
+Approximately 5 seconds.
+
+## Magnet
+
+Automatically attracts nearby bubbles and pearls.
+
+Duration:
+
+Approximately 6 seconds.
+
+## Speed Boost
+
+Temporarily increases player movement and score multiplier.
+
+Duration:
+
+Approximately 4 seconds.
+
+## Slow Motion
+
+Temporarily reduces world speed.
+
+Duration:
+
+Approximately 5 seconds.
+
+## Pearl Multiplier
+
+Temporarily increases collectible score.
+
+Duration:
+
+Approximately 8 seconds.
+
+Power-ups should be rare enough that they feel valuable.
+
+---
+
+# 16. Environment System
+
+The game contains four major environments.
+
+Environment progression:
+
+1. Coral Reef
+2. Deep Ocean
+3. Shipwreck
+4. Volcano Ocean
+
+Each environment must have unique:
+
+Background
+
+Parallax layers
+
+Sea plants
+
+Rocks
+
+Particles
+
+Lighting
+
+Obstacles
+
+Ambient effects
+
+Music
+
+---
+
+# 17. Environment 1 - Coral Reef
+
+The game begins in a beautiful tropical coral reef.
+
+Visual elements:
+
+Bright blue water
+
+Sun rays from above
+
+Colorful coral
+
+Small fish
+
+Seaweed
+
+Jellyfish
+
+Tropical plants
+
+Sand
+
+Rocks
+
+Bubbles
+
+Background should feel bright and welcoming.
+
+Difficulty:
+
+Easy.
+
+This environment should introduce the game mechanics.
+
+---
+
+# 18. Environment 2 - Deep Ocean
+
+After enough distance or score, transition into Deep Ocean.
+
+Visual style:
+
+Darker blue water
+
+Reduced sunlight
+
+Large underwater rocks
+
+Glowing plants
+
+Jellyfish
+
+Deep sea creatures
+
+Bubbles
+
+Bioluminescent particles
+
+Lighting becomes darker.
+
+Difficulty increases.
+
+Sharks appear more frequently.
+
+Obstacles become more complex.
+
+---
+
+# 19. Environment 3 - Shipwreck
+
+The player enters an underwater shipwreck zone.
+
+Visual elements:
+
+Old pirate ship
+
+Broken ship parts
+
+Treasure chests
+
+Anchors
+
+Wood debris
+
+Ropes
+
+Seaweed
+
+Gold coins
+
+Pearls
+
+Dark caves
+
+The shipwreck should create more interesting obstacle layouts.
+
+Possible hazards:
+
+Falling wooden debris
+
+Moving anchors
+
+Narrow passages
+
+Sharks
+
+Mines
+
+Difficulty:
+
+Medium to hard.
+
+---
+
+# 20. Environment 4 - Volcano Ocean
+
+The final environment is a dangerous underwater volcanic area.
+
+Visual style:
+
+Dark red/orange lighting
+
+Underwater volcanoes
+
+Lava cracks
+
+Hot bubbles
+
+Smoke
+
+Burning rocks
+
+Volcanic particles
+
+Glowing lava
+
+The environment should feel intense.
+
+Difficulty:
+
+Hard.
+
+Obstacles move faster.
+
+More mines.
+
+More sharks.
+
+More narrow passages.
+
+More moving hazards.
+
+---
+
+# 21. Environment Transition
+
+Do not suddenly switch backgrounds.
+
+Create smooth transitions.
+
+Possible transition:
+
+Coral Reef
+
+Blue water becomes darker
+
+Plants become less colorful
+
+Light decreases
+
+Deep Ocean begins
+
+Then:
+
+Shipwreck elements gradually appear.
+
+Then:
+
+Water becomes darker and warmer.
+
+Volcanic glow appears.
+
+Then:
+
+Volcano Ocean begins.
+
+Transition should happen based on distance or score.
+
+Example:
+
+0 - 2000 meters:
+
+Coral Reef
+
+2000 - 5000 meters:
+
+Deep Ocean
+
+5000 - 8000 meters:
+
+Shipwreck
+
+8000+ meters:
+
+Volcano Ocean
+
+These values should be configurable.
+
+---
+
+# 22. Parallax Background
+
+Each environment should contain multiple layers.
+
+Recommended:
+
+Layer 1:
+
+Far background
+
+Very slow movement.
+
+Layer 2:
+
+Mid background
+
+Medium movement.
+
+Layer 3:
+
+Near background
+
+Faster movement.
+
+Layer 4:
+
+Foreground objects
+
+Fastest movement.
+
+Layer 5:
+
+Gameplay obstacles
+
+Fastest movement.
+
+Layer 6:
+
+Particles
+
+Independent movement.
+
+Use Flame's ParallaxComponent where appropriate.
+
+The parallax effect should create strong depth.
+
+---
+
+# 23. Water Effects
+
+Create underwater atmosphere.
+
+Effects:
+
+Small bubbles
+
+Floating particles
+
+Light rays
+
+Tiny fish silhouettes
+
+Dust particles
+
+Seaweed movement
+
+Volcanic smoke
+
+The effects should be lightweight.
+
+Do not create thousands of particles.
+
+Use particle pooling where possible.
+
+---
+
+# 24. Road Equivalent
+
+There is no road in this game.
+
+Instead, create an underwater playable zone.
+
+The top and bottom areas should contain environmental decorations.
+
+Example:
+
+Top:
+
+Coral, rocks, seaweed.
+
+Bottom:
+
+Sand, rocks, coral.
+
+These decorations should not always be collision objects.
+
+---
+
+# 25. Game Speed
+
+Initial speed:
+
+Approximately 200 pixels per second.
+
+Gradually increase speed.
+
+Example:
+
+Start:
+
+200
+
+After 30 seconds:
+
+240
+
+After 60 seconds:
+
+280
+
+After 90 seconds:
+
+320
+
+After 120 seconds:
+
+360
+
+Maximum:
+
+450
+
+Keep all values configurable.
+
+Difficulty should increase gradually rather than suddenly.
+
+---
+
+# 26. Difficulty System
+
+Difficulty should depend on distance.
+
+Increase:
+
+World speed
+
+Obstacle frequency
+
+Shark frequency
+
+Mine frequency
+
+Moving obstacle frequency
+
+Obstacle combinations
+
+Reduce:
+
+Safe gaps
+
+Increase:
+
+Collectible risk
+
+But never generate impossible obstacle combinations.
+
+Always ensure there is at least one reasonable path.
+
+---
+
+# 27. Procedural Spawn System
+
+Create:
+
+ObstacleManager
+
+CollectibleManager
+
+PowerUpManager
+
+Each manager should use reusable spawn patterns.
+
+Do not put spawning logic directly inside the main game class.
+
+Use configurable spawn definitions.
+
+Example:
+
+ObstaclePattern
+
+CollectiblePattern
+
+PowerUpPattern
+
+EnvironmentPattern
+
+---
+
+# 28. Collision System
+
+Use Flame collision detection.
+
+Player collision components:
+
+CircleHitbox or RectangleHitbox.
+
+Obstacle collision components:
+
+RectangleHitbox / PolygonHitbox where appropriate.
+
+Collectible collision:
+
+CircleHitbox.
+
+Make hitboxes smaller than sprites.
+
+Collision categories should distinguish:
+
+Player
+
+Enemy
+
+Obstacle
+
+Collectible
+
+PowerUp
+
+---
+
+# 29. Crash Behavior
+
+When the player hits an obstacle:
+
+Stop gameplay.
+
+Play crash sound.
+
+Play fish hurt/death animation.
+
+Create bubbles and particles.
+
+Optionally apply small screen shake.
+
+Stop or fade background music.
+
+Freeze obstacle movement.
+
+Show Game Over overlay.
+
+Do not immediately remove the player.
+
+Allow a short crash animation.
+
+---
+
+# 30. Score System
+
+Score should increase continuously based on distance.
+
+Example:
+
+Every 100 meters:
+
++10 score.
+
+Collect bubble:
+
++1
+
+Collect pearl:
+
++10
+
+Power-up multiplier:
+
+2x score.
+
+Display:
+
+Current Score
+
+Best Score
+
+Distance
+
+Optional:
+
+Coins / Pearls collected.
+
+---
+
+# 31. High Score
+
+Use SharedPreferences.
+
+Save:
+
+High score
+
+Best distance
+
+Total pearls
+
+Total games
+
+High score should persist after app restart.
+
+---
+
+# 32. Game UI
+
+Gameplay UI should be minimal.
+
+Top-left:
+
+Score.
+
+Top-center:
+
+Distance.
+
+Top-right:
+
+Pause button.
+
+Power-up status:
+
+Show active power-up icon with countdown.
+
+Use large readable UI.
+
+Do not cover the gameplay area.
+
+---
+
+# 33. Main Menu
+
+Create a polished main menu.
+
+Elements:
+
+Ocean Escape logo
+
+Play button
+
+Theme / Ocean Zones button
+
+High Score
+
+Settings
+
+Sound toggle
+
+Music toggle
+
+Exit/back if needed.
+
+Background:
+
+Animated underwater scene.
+
+Small fish should swim in the background.
+
+Bubbles should move upward.
+
+---
+
+# 34. Game Over Screen
+
+Show:
+
+GAME OVER
+
+Score
+
+Best Score
+
+Distance
+
+Bubbles collected
+
+Pearls collected
+
+Buttons:
+
+RETRY
+
+HOME
+
+Optional:
+
+SHARE
+
+Example:
+
+Score: 1280
+
+Best: 4520
+
+Distance: 4.8 km
+
+The game-over UI should have a polished cartoon underwater design.
+
+---
+
+# 35. Pause System
+
+Pause button should freeze:
+
+Player
+
+Obstacles
+
+Collectibles
+
+Particles
+
+Animations
+
+Timers
+
+Audio should pause or reduce volume.
+
+Pause menu:
+
+RESUME
+
+RESTART
+
+HOME
+
+---
+
+# 36. Audio
+
+Use Flame Audio.
+
+Required sounds:
+
+Bubble collect
+
+Pearl collect
+
+Power-up
+
+Shield activate
+
+Magnet activate
+
+Speed boost
+
+Shark warning
+
+Crash
+
+Button click
+
+Game start
+
+Game over
+
+Create four background music tracks.
+
+Coral Reef BGM:
+
+Bright and relaxing.
+
+Deep Ocean BGM:
+
+Mysterious.
+
+Shipwreck BGM:
+
+Adventure/pirate feeling.
+
+Volcano Ocean BGM:
+
+Fast and intense.
+
+Music must loop seamlessly.
+
+---
+
+# 37. Asset Requirements
+
+Create assets as separate files.
+
+Character:
+
+fish_idle.png
+
+fish_swim.png
+
+fish_hurt.png
+
+fish_death.png
+
+fish_shield.png
+
+Obstacles:
+
+shark.png
+
+shark_swim.png
+
+mine.png
+
+coral_red.png
+
+coral_blue.png
+
+coral_green.png
+
+rock.png
+
+ship_debris.png
+
+Collectibles:
+
+bubble.png
+
+pearl.png
+
+Power-ups:
+
+shield.png
+
+magnet.png
+
+speed_boost.png
+
+slow_motion.png
+
+pearl_multiplier.png
+
+Backgrounds:
+
+coral_far.png
+
+coral_mid.png
+
+coral_near.png
+
+deep_far.png
+
+deep_mid.png
+
+deep_near.png
+
+shipwreck_far.png
+
+shipwreck_mid.png
+
+shipwreck_near.png
+
+volcano_far.png
+
+volcano_mid.png
+
+volcano_near.png
+
+UI:
+
+button_play.png
+
+button_pause.png
+
+button_restart.png
+
+button_home.png
+
+game_over_panel.png
+
+score_panel.png
+
+powerup_panel.png
+
+---
+
+# 38. Recommended Asset Style
+
+All artwork must use one consistent visual style.
+
+Style:
+
+2D cartoon
+
+Cute
+
+Colorful
+
+High quality
+
+Mobile game ready
+
+Clean outlines
+
+Soft shadows
+
+Bright highlights
+
+Expressive characters
+
+No photorealism
+
+No pixel art
+
+No inconsistent art styles.
+
+The fish, shark, obstacles, backgrounds and UI must look like they belong to the same game.
+
+---
+
+# 39. Recommended Sprite Sizes
+
+Player:
+
+Approximately 256 x 256 per frame.
+
+Small collectibles:
+
+128 x 128.
+
+Obstacles:
+
+256 x 256 or larger depending on object.
+
+UI:
+
+Use scalable Flutter widgets whenever possible.
+
+Background layers:
+
+Use large horizontal textures suitable for tiling.
+
+Create assets at higher resolution than the final display size where possible.
+
+---
+
+# 40. Folder Structure
+
+Use this structure:
+
+lib/
+
+core/
+
+components/
+
+game/
+
+managers/
+
+models/
+
+config/
+
+screens/
+
+ui/
+
+audio/
+
+utils/
+
+assets/
+
+images/
+
+player/
+
+obstacles/
+
+collectibles/
+
+powerups/
+
+backgrounds/
+
+ui/
+
+audio/
+
+music/
+
+sfx/
+
+---
+
+# 41. Main Classes
+
+Create these classes:
+
+OceanEscapeGame
+
+PlayerFish
+
+ObstacleManager
+
+CollectibleManager
+
+PowerUpManager
+
+EnvironmentManager
+
+AudioManager
+
+ScoreManager
+
+DifficultyManager
+
+GameStateManager
+
+ParallaxBackground
+
+Shark
+
+SeaMine
+
+CoralObstacle
+
+BubbleCollectible
+
+PearlCollectible
+
+PowerUp
+
+GameOverOverlay
+
+PauseOverlay
+
+---
+
+# 42. Game State
+
+Use clear game states.
+
+States:
+
+loading
+
+ready
+
+playing
+
+paused
+
+crashed
+
+gameOver
+
+restarting
+
+Do not use scattered boolean flags when a state enum can represent the state.
+
+---
+
+# 43. Code Architecture
+
+Keep responsibilities separated.
+
+OceanEscapeGame:
+
+Controls the main game.
+
+PlayerFish:
+
+Controls player movement and animation.
+
+ObstacleManager:
+
+Controls obstacles.
+
+CollectibleManager:
+
+Controls bubbles and pearls.
+
+PowerUpManager:
+
+Controls power-ups.
+
+EnvironmentManager:
+
+Controls environment progression.
+
+AudioManager:
+
+Controls all audio.
+
+ScoreManager:
+
+Controls score.
+
+DifficultyManager:
+
+Controls difficulty.
+
+Game UI:
+
+Only displays game information.
+
+Avoid putting business logic inside Flutter UI widgets.
+
+---
+
+# 44. Performance Requirements
+
+Target:
+
+60 FPS.
+
+Optimize for:
+
+Android mid-range devices.
+
+Avoid:
+
+Creating thousands of objects.
+
+Repeated image loading.
+
+Repeated audio initialization.
+
+Large unnecessary textures.
+
+Memory leaks.
+
+Unbounded particle creation.
+
+Use:
+
+Object pooling.
+
+Asset caching.
+
+Efficient collision detection.
+
+Sprite animations.
+
+Preloaded audio pools.
+
+---
+
+# 45. Offline First
+
+The complete game should work without internet.
+
+Internet should NOT be required for:
+
+Playing
+
+Scoring
+
+High score
+
+Audio
+
+Theme selection
+
+Game settings
+
+All game assets should be bundled inside the application.
+
+---
+
+# 46. Settings
+
+Create:
+
+Music ON/OFF
+
+Sound ON/OFF
+
+Vibration ON/OFF
+
+Quality:
+
+Low
+
+Medium
+
+High
+
+Reset progress
+
+Settings should persist using SharedPreferences.
+
+---
+
+# 47. Vibration
+
+Optional haptic feedback.
+
+Small vibration:
+
+Collect pearl
+
+Power-up
+
+Crash
+
+Avoid excessive vibration.
+
+Allow the user to disable vibration.
+
+---
+
+# 48. Visual Polish
+
+Add:
+
+Water distortion effect
+
+Bubbles
+
+Small particles
+
+Character squash/stretch
+
+Smooth animation
+
+Screen shake
+
+Glow around pearls
+
+Glow around power-ups
+
+Subtle UI animations
+
+Button press animation
+
+Game-over entrance animation
+
+Smooth environment transition
+
+The game should feel alive even when the player does nothing.
+
+---
+
+# 49. Animation Principles
+
+Use:
+
+Ease-out
+
+Ease-in
+
+Smooth interpolation
+
+Small squash/stretch
+
+Natural movement
+
+Avoid robotic animation.
+
+The fish should slightly rotate upward while swimming upward.
+
+The fish should rotate downward while falling.
+
+Limit rotation so it does not look unnatural.
+
+---
+
+# 50. Game Start
+
+When Play is pressed:
+
+Show a short 3-2-1 countdown.
+
+Then:
+
+GO!
+
+Fish starts swimming.
+
+Background music starts.
+
+Obstacle spawning starts.
+
+Score starts.
+
+---
+
+# 51. Restart
+
+Restart must completely reset:
+
+Player position
+
+Player velocity
+
+Score
+
+Distance
+
+Obstacles
+
+Collectibles
+
+Power-ups
+
+Environment
+
+Difficulty
+
+Timers
+
+Game state
+
+Audio
+
+Do not create a second game instance unnecessarily.
+
+---
+
+# 52. Theme / Zone Selection
+
+Allow players to unlock environments progressively.
+
+Initially:
+
+Coral Reef unlocked.
+
+Deep Ocean:
+
+Unlock after reaching a required distance.
+
+Shipwreck:
+
+Unlock after reaching another milestone.
+
+Volcano Ocean:
+
+Unlock after reaching a higher milestone.
+
+Alternatively, allow all environments to be playable from the beginning.
+
+The architecture should support both options.
+
+---
+
+# 53. Monetization Ready Architecture
+
+Do not implement aggressive monetization.
+
+Keep architecture ready for:
+
+Rewarded ad
+
+Remove ads
+
+Cosmetic fish skins
+
+Future premium items
+
+Daily reward
+
+Revive once
+
+Example:
+
+After crash:
+
+WATCH AD TO REVIVE
+
+or
+
+RETRY
+
+But monetization should not be required for the core gameplay.
+
+---
+
+# 54. Future Expansion
+
+The architecture should allow adding:
+
+New fish
+
+Fish skins
+
+New sharks
+
+New enemies
+
+New oceans
+
+Boss battles
+
+Missions
+
+Achievements
+
+Daily challenges
+
+Leaderboards
+
+Power-ups
+
+Special events
+
+Seasonal environments
+
+Underwater treasure collection
+
+Character customization
+
+---
+
+# 55. Development Order
+
+Build in this exact order.
+
+Phase 1:
+
+Flutter + Flame setup.
+
+Phase 2:
+
+Create basic game screen.
+
+Phase 3:
+
+Create fish player.
+
+Phase 4:
+
+Implement tap-to-swim physics.
+
+Phase 5:
+
+Implement camera/world scrolling.
+
+Phase 6:
+
+Create Coral Reef background.
+
+Phase 7:
+
+Create one obstacle.
+
+Phase 8:
+
+Implement collision.
+
+Phase 9:
+
+Implement game-over.
+
+Phase 10:
+
+Create bubble collectible.
+
+Phase 11:
+
+Create pearl collectible.
+
+Phase 12:
+
+Implement score.
+
+Phase 13:
+
+Implement high score.
+
+Phase 14:
+
+Create shark.
+
+Phase 15:
+
+Create mines.
+
+Phase 16:
+
+Create procedural obstacle patterns.
+
+Phase 17:
+
+Implement difficulty progression.
+
+Phase 18:
+
+Create power-ups.
+
+Phase 19:
+
+Create Deep Ocean.
+
+Phase 20:
+
+Create Shipwreck.
+
+Phase 21:
+
+Create Volcano Ocean.
+
+Phase 22:
+
+Implement environment transitions.
+
+Phase 23:
+
+Add audio.
+
+Phase 24:
+
+Add particles.
+
+Phase 25:
+
+Add UI polish.
+
+Phase 26:
+
+Add settings.
+
+Phase 27:
+
+Optimize performance.
+
+Phase 28:
+
+Test on real Android devices.
+
+Phase 29:
+
+Prepare Play Store assets.
+
+Phase 30:
+
+Release.
+
+---
+
+# 56. AI Agent Development Rules
+
+When implementing this project:
+
+Always prioritize playable functionality.
+
+Do not create unnecessary abstractions.
+
+Do not over-engineer.
+
+Keep components modular.
+
+Use null safety.
+
+Use clean Dart code.
+
+Use Flame's current stable APIs compatible with the project's selected Flame version.
+
+Do not use deprecated Flame APIs.
+
+Do not hardcode screen dimensions.
+
+Do not load assets repeatedly during gameplay.
+
+Do not create unnecessary objects every frame.
+
+Do not perform expensive operations inside update().
+
+Do not put Flutter navigation logic inside low-level Flame components unless necessary.
+
+Keep game logic independent from UI.
+
+Use configuration classes for:
+
+Game speed
+
+Gravity
+
+Jump/swim impulse
+
+Spawn intervals
+
+Difficulty
+
+Environment thresholds
+
+Score values
+
+Power-up durations.
+
+---
+
+# 57. Important Gameplay Rule
+
+The game must always be fun and fair.
+
+Never generate an obstacle pattern that makes survival impossible.
+
+The player should always have enough reaction time.
+
+Difficulty should increase gradually.
+
+Early gameplay should be relaxing.
+
+Later gameplay should become challenging.
+
+The player should feel:
+
+"One more try."
+
+The game should encourage repeated short sessions.
+
+---
+
+# 58. Final Game Experience
+
+The final experience should feel like a polished casual mobile game.
+
+The player opens the game.
+
+Sees a beautiful underwater animated menu.
+
+Presses Play.
+
+A cute fish appears.
+
+3-2-1.
+
+The fish begins swimming.
+
+The player taps to rise.
+
+Releases to fall.
+
+Bubbles float around.
+
+Pearls sparkle.
+
+Sharks approach.
+
+Mines appear.
+
+The environment gradually changes.
+
+The game gets faster.
+
+The player collects a shield.
+
+A shark passes.
+
+The player survives.
+
+The environment becomes dark.
+
+A shipwreck appears.
+
+Later lava glows in the distance.
+
+The player finally crashes.
+
+The screen shakes slightly.
+
+Crash sound plays.
+
+Game Over appears.
+
+Score is displayed.
+
+The player presses Retry.
+
+The game starts again immediately.
+
+The complete game should deliver this experience with smooth controls, polished visuals, responsive feedback, and strong replayability.
