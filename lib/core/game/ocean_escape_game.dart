@@ -20,6 +20,8 @@ import '../managers/obstacle_manager.dart';
 import '../managers/power_up_manager.dart';
 import '../managers/score_manager.dart';
 import '../managers/settings_manager.dart';
+import '../managers/shop_manager.dart';
+import '../models/fish_skin.dart';
 import '../models/power_up_type.dart';
 import 'game_state.dart';
 
@@ -37,13 +39,27 @@ class OceanEscapeGame extends FlameGame with HasCollisionDetection {
     required this.audioManager,
     required this.hapticsManager,
     required this.adService,
-  });
+    required this.shopManager,
+  }) : fishSkin = shopManager.selectedFish;
 
   final SettingsManager settingsManager;
   final ScoreManager scoreManager;
   final AudioManager audioManager;
   final HapticsManager hapticsManager;
   final AdService adService;
+  final ShopManager shopManager;
+  final FishSkin fishSkin;
+
+  /// Revives allowed per run (each one costs an ad).
+  static const int maxRevives = 3;
+  int revivesUsed = 0;
+
+  /// True between game-over and the moment the run is committed (gold
+  /// banked). While pending the player may still revive or double gold.
+  bool _runPending = false;
+  bool get runPending => _runPending;
+  bool get canRevive =>
+      _runPending && revivesUsed < maxRevives && stateNotifier.state == GameState.gameOver;
 
   final GameStateNotifier stateNotifier = GameStateNotifier();
   final DifficultyManager difficulty = DifficultyManager();
@@ -103,7 +119,8 @@ class OceanEscapeGame extends FlameGame with HasCollisionDetection {
     powerUpManager = PowerUpManager();
     await addAll([obstacleManager, collectibleManager, powerUpManager]);
 
-    player = PlayerFish();
+    scoreManager.goldBonus = fishSkin.goldBonus;
+    player = PlayerFish(painter: fishSkin.createPainter());
     await add(player);
 
     _recomputeBounds();
@@ -183,6 +200,8 @@ class OceanEscapeGame extends FlameGame with HasCollisionDetection {
   }
 
   void restartGame() {
+    unawaited(endRun());
+    revivesUsed = 0;
     stateNotifier.set(GameState.restarting);
     obstacleManager.reset();
     collectibleManager.reset();
@@ -235,9 +254,41 @@ class OceanEscapeGame extends FlameGame with HasCollisionDetection {
   }
 
   Future<void> _completeGameOver() async {
+    _runPending = true;
     stateNotifier.set(GameState.gameOver);
     audioManager.gameOver();
     await scoreManager.finalizeRound();
+  }
+
+  /// Continues the current run after a game-over: score, distance, gold and
+  /// zone are kept, on-screen hazards are cleared and the fish gets a short
+  /// shield, then the 3-2-1 countdown plays again.
+  void revive() {
+    if (!canRevive) return;
+    revivesUsed++;
+    _runPending = false;
+    stateNotifier.set(GameState.restarting);
+    obstacleManager.reset();
+    activePowerUpTimers.clear();
+    _crashTimer = 0;
+    _shakeOffset = Vector2.zero();
+    _placePlayerAtStart();
+    player.hasShield = true;
+    activePowerUpTimers[PowerUpType.shield] = PowerUpConfig.durationSeconds[PowerUpType.shield]!;
+    _beginReadyCountdown();
+  }
+
+  /// Banks the run's gold (optionally doubled) and lifetime totals. Runs at
+  /// most once per run; returns the gold added (0 if already committed).
+  Future<int> endRun({bool doubled = false}) async {
+    if (!_runPending) return 0;
+    _runPending = false;
+    // Snapshot synchronously: restartGame() resets the score right after.
+    final gold = scoreManager.goldEarned * (doubled ? 2 : 1);
+    final pearls = scoreManager.pearlsCollected;
+    await shopManager.addGold(gold);
+    await scoreManager.commitRunTotals(pearls: pearls);
+    return gold;
   }
 
   void onPowerUpCollected(PowerUpType kind, Vector2 position) {

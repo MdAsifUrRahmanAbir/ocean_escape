@@ -3,6 +3,7 @@ import 'managers/audio_manager.dart';
 import 'managers/haptics_manager.dart';
 import 'managers/score_manager.dart';
 import 'managers/settings_manager.dart';
+import 'managers/shop_manager.dart';
 import 'managers/storage_service.dart';
 
 /// Bundles the app-lifetime services (§41) so screens only need to thread a
@@ -16,6 +17,7 @@ class AppServices {
     required this.audio,
     required this.haptics,
     required this.ads,
+    required this.shop,
   });
 
   final StorageService storage;
@@ -24,6 +26,7 @@ class AppServices {
   final AudioManager audio;
   final HapticsManager haptics;
   final AdService ads;
+  final ShopManager shop;
 
   static Future<AppServices> bootstrap() async {
     final storage = await StorageService.getInstance();
@@ -32,7 +35,10 @@ class AppServices {
     await score.load();
     final audio = AudioManager(settings);
     final haptics = HapticsManager(settings);
-    final ads = AdService();
+    final ads = AdService(storage);
+    final shop = ShopManager(storage);
+    // Don't block startup on the ad SDK.
+    ads.init();
     return AppServices(
       storage: storage,
       settings: settings,
@@ -40,6 +46,7 @@ class AppServices {
       audio: audio,
       haptics: haptics,
       ads: ads,
+      shop: shop,
     );
   }
 }

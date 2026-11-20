@@ -26,6 +26,11 @@ class StorageService {
   static const _kVibrationOn = 'vibration_on';
   static const _kQuality = 'quality';
   static const _kUnlockedEnvIndex = 'unlocked_env_index';
+  static const _kGold = 'gold';
+  static const _kOwnedFish = 'owned_fish';
+  static const _kSelectedFish = 'selected_fish';
+  static const _kFishAdPrefix = 'fish_ad_progress_';
+  static const _kPlaysSinceAd = 'plays_since_interstitial';
 
   int get highScore => _prefs.getInt(_kHighScore) ?? 0;
   Future<void> setHighScore(int v) => _prefs.setInt(_kHighScore, v);
@@ -55,6 +60,26 @@ class StorageService {
   /// Highest environment index (0-3) unlocked by best distance so far.
   int get unlockedEnvIndex => _prefs.getInt(_kUnlockedEnvIndex) ?? 0;
   Future<void> setUnlockedEnvIndex(int v) => _prefs.setInt(_kUnlockedEnvIndex, v);
+
+  // --- Gold & fish shop ---
+
+  int get gold => _prefs.getInt(_kGold) ?? 0;
+  Future<void> setGold(int v) => _prefs.setInt(_kGold, v);
+
+  List<String> get ownedFish => _prefs.getStringList(_kOwnedFish) ?? const [];
+  Future<void> setOwnedFish(List<String> v) => _prefs.setStringList(_kOwnedFish, v);
+
+  String? get selectedFish => _prefs.getString(_kSelectedFish);
+  Future<void> setSelectedFish(String id) => _prefs.setString(_kSelectedFish, id);
+
+  /// How many unlock-ads the player has already watched for fish [id].
+  int fishAdProgress(String id) => _prefs.getInt('$_kFishAdPrefix$id') ?? 0;
+  Future<void> setFishAdProgress(String id, int v) => _prefs.setInt('$_kFishAdPrefix$id', v);
+
+  // --- Ads ---
+
+  int get playsSinceInterstitial => _prefs.getInt(_kPlaysSinceAd) ?? 0;
+  Future<void> setPlaysSinceInterstitial(int v) => _prefs.setInt(_kPlaysSinceAd, v);
 
   Future<void> resetProgress() async {
     await _prefs.remove(_kHighScore);

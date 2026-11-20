@@ -18,13 +18,15 @@ enum FishAnimState { idleSwim, fastSwim, hurt, shielded, death, powerUpActivate 
 /// gravity always pulls down, holding the pointer adds upward thrust.
 class PlayerFish extends PositionComponent
     with CollisionCallbacks, HasGameReference<OceanEscapeGame> {
-  PlayerFish() : super(anchor: Anchor.center, size: Vector2.all(GameConfig.fishRadius * 2));
+  PlayerFish({FishPainter? painter})
+      : painter = painter ?? FishPainter(),
+        super(anchor: Anchor.center, size: Vector2.all(GameConfig.fishRadius * 2));
 
   static const double _deathDuration = 1.1;
   static const double _hurtFlashDuration = 0.35;
   static const double _powerUpFxDuration = 0.5;
 
-  final FishPainter painter = FishPainter();
+  final FishPainter painter;
 
   double velocityY = 0;
   bool isHolding = false;

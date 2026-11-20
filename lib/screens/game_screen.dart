@@ -31,11 +31,14 @@ class _GameScreenState extends State<GameScreen> {
       audioManager: widget.services.audio,
       hapticsManager: widget.services.haptics,
       adService: widget.services.ads,
+      shopManager: widget.services.shop,
     );
   }
 
   @override
   void dispose() {
+    // Bank gold if the player leaves via system back from game-over.
+    game.endRun();
     _focusNode.dispose();
     super.dispose();
   }
@@ -50,6 +53,7 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   void _goHome() {
+    game.endRun();
     game.resumeEngine();
     Navigator.of(context).popUntil((route) => route.isFirst);
   }

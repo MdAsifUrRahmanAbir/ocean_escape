@@ -15,6 +15,17 @@ class ScoreManager extends ChangeNotifier {
   int pearlsCollected = 0;
   double _distanceScoreAccumulator = 0;
 
+  /// Gold multiplier from the selected fish's perk.
+  double goldBonus = 1.0;
+
+  /// Gold earned so far in this run (before any ad doubling).
+  int get goldEarned =>
+      ((bubblesCollected * ScoreConfig.goldPerBubble +
+                  pearlsCollected * ScoreConfig.goldPerPearl +
+                  distanceMeters ~/ ScoreConfig.metersPerGold) *
+              goldBonus)
+          .round();
+
   int highScore = 0;
   double bestDistanceMeters = 0;
 
@@ -56,7 +67,8 @@ class ScoreManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Persists results at game-over; returns true if a new high score was set.
+  /// Persists best score/distance at game-over; returns true if a new high
+  /// score was set. Safe to call again after a revive (only ever raises).
   Future<bool> finalizeRound() async {
     bool isNewHighScore = false;
     if (score > highScore) {
@@ -68,9 +80,15 @@ class ScoreManager extends ChangeNotifier {
       bestDistanceMeters = distanceMeters;
       await _storage.setBestDistanceMeters(distanceMeters);
     }
-    await _storage.setTotalPearls(_storage.totalPearls + pearlsCollected);
-    await _storage.setTotalGames(_storage.totalGames + 1);
     notifyListeners();
     return isNewHighScore;
+  }
+
+  /// Records run totals once the run is truly over (no more revives).
+  /// [pearls] is passed in (not read from state) because the caller may
+  /// already have reset this manager for the next run.
+  Future<void> commitRunTotals({required int pearls}) async {
+    await _storage.setTotalPearls(_storage.totalPearls + pearls);
+    await _storage.setTotalGames(_storage.totalGames + 1);
   }
 }

@@ -65,6 +65,17 @@ class _HudState extends State<Hud> with SingleTickerProviderStateMixin {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _Pill(child: Text('${game.scoreManager.score}', style: _statStyle)),
+                const SizedBox(width: 8),
+                _Pill(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.monetization_on_rounded, color: Color(0xFFFFD54F), size: 20),
+                      const SizedBox(width: 6),
+                      Text('${game.scoreManager.goldEarned}', style: _statStyle),
+                    ],
+                  ),
+                ),
                 const Spacer(),
                 _Pill(child: Text(_formatDistance(game.scoreManager.distanceMeters), style: _statStyle)),
                 const Spacer(),

@@ -13,12 +13,19 @@ class FishPainter {
   final Color finColor;
   final Color outlineColor;
 
+  /// Optional pair of vertical body stripes (clownfish-style patterns).
+  final Color? stripeColor;
+
   FishPainter({
     this.bodyColor = const Color(0xFFFF8A3D),
     this.bellyColor = const Color(0xFFFFD180),
     this.finColor = const Color(0xFFFFD54F),
     this.outlineColor = const Color(0xFF2B1B12),
-  })  : _bodyPaint = Paint()..style = PaintingStyle.fill,
+    this.stripeColor,
+  })  : _stripePaint = Paint()
+          ..style = PaintingStyle.fill
+          ..color = stripeColor ?? const Color(0x00000000),
+        _bodyPaint = Paint()..style = PaintingStyle.fill,
         _bellyPaint = Paint()
           ..style = PaintingStyle.fill
           ..color = bellyColor,
@@ -45,6 +52,7 @@ class FishPainter {
           ..color = const Color(0x996FE0FF),
         _shieldFillPaint = Paint()..color = const Color(0x226FE0FF);
 
+  final Paint _stripePaint;
   final Paint _bodyPaint;
   final Paint _bellyPaint;
   final Paint _finPaint;
@@ -129,6 +137,19 @@ class FishPainter {
     final bodyRect = Rect.fromCenter(center: Offset.zero, width: radius * 2.0, height: radius * 1.6);
     final bodyRRect = RRect.fromRectAndRadius(bodyRect, Radius.circular(radius));
     canvas.drawRRect(bodyRRect, _bodyPaint..color = _withTint(bodyColor, tintOverride, tintStrength));
+    final stripe = stripeColor;
+    if (stripe != null) {
+      canvas.save();
+      canvas.clipRRect(bodyRRect);
+      _stripePaint.color = _withTint(stripe, tintOverride, tintStrength);
+      for (final x in const [0.18, -0.45]) {
+        canvas.drawRect(
+          Rect.fromCenter(center: Offset(radius * x, 0), width: radius * 0.26, height: radius * 2),
+          _stripePaint,
+        );
+      }
+      canvas.restore();
+    }
     canvas.drawRRect(bodyRRect, _outlinePaint);
 
     // Belly highlight

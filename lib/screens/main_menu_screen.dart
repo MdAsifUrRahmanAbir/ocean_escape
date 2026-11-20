@@ -4,6 +4,7 @@ import '../core/app_services.dart';
 import '../ui/primary_button.dart';
 import '../ui/underwater_backdrop.dart';
 import 'about_screen.dart';
+import 'fish_shop_screen.dart';
 import 'game_screen.dart';
 import 'settings_screen.dart';
 import 'zones_screen.dart';
@@ -15,8 +16,11 @@ class MainMenuScreen extends StatelessWidget {
   const MainMenuScreen({super.key, required this.services});
   final AppServices services;
 
-  void _play(BuildContext context) {
+  Future<void> _play(BuildContext context) async {
     services.audio.buttonClick();
+    // Every few runs an interstitial is shown before the game starts.
+    await services.ads.onRunStarted();
+    if (!context.mounted) return;
     Navigator.of(
       context,
     ).push(MaterialPageRoute(builder: (_) => GameScreen(services: services)));
@@ -49,6 +53,12 @@ class MainMenuScreen extends StatelessWidget {
                                 highScore: services.score.highScore,
                               ),
                             ),
+                            const SizedBox(height: 10),
+                            AnimatedBuilder(
+                              animation: services.shop,
+                              builder: (context, _) =>
+                                  GoldBalancePill(gold: services.shop.gold),
+                            ),
                           ],
                         ),
                       ),
@@ -65,6 +75,22 @@ class MainMenuScreen extends StatelessWidget {
                               fontSize: 22,
                               width: 210,
                               onPressed: () => _play(context),
+                            ),
+                            const SizedBox(height: 12),
+                            PrimaryButton(
+                              label: 'FISH SHOP',
+                              icon: Icons.set_meal_rounded,
+                              color: const Color(0xFFE0A800),
+                              width: 210,
+                              onPressed: () {
+                                services.audio.buttonClick();
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (_) =>
+                                        FishShopScreen(services: services),
+                                  ),
+                                );
+                              },
                             ),
                             const SizedBox(height: 12),
                             PrimaryButton(

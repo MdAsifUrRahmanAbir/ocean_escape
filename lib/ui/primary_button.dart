@@ -14,6 +14,7 @@ class PrimaryButton extends StatefulWidget {
     this.fontSize = 20,
     this.width,
     this.enabled = true,
+    this.padding = const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
   });
 
   final String label;
@@ -24,6 +25,7 @@ class PrimaryButton extends StatefulWidget {
   final double fontSize;
   final double? width;
   final bool enabled;
+  final EdgeInsets padding;
 
   @override
   State<PrimaryButton> createState() => _PrimaryButtonState();
@@ -47,7 +49,7 @@ class _PrimaryButtonState extends State<PrimaryButton> {
         curve: Curves.easeOut,
         child: Container(
           width: widget.width,
-          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
+          padding: widget.padding,
           decoration: BoxDecoration(
             color: color,
             borderRadius: BorderRadius.circular(20),
